@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>SpringBoot发送邮件服务 | MrHu</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://mrhcj.github.io/favicon.ico?v=1676989601653">
+<link rel="stylesheet" href="https://mrhcj.github.io/styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="选择邮箱 开启SMTP服务
+
+导入Spring Email Jar包  链接:Spring Boot Starter Mail
+&lt;!-- https://mvnrepository.com/artifact/org.springfra..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://mrhcj.github.io">
+        <img src="https://mrhcj.github.io/images/avatar.png?v=1676989601653" class="site-logo">
+        <h1 class="site-title">MrHu</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+        
+          <a href="https://mrhcj.github.io/archives" class="site-nav">
+            test
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/mrhcj" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      悟已往之不谏 知来者之可追
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://mrhcj.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">SpringBoot发送邮件服务</h2>
+            <div class="post-date">2023-02-10</div>
+            
+            <div class="post-content" v-pre>
+              <h3 id="选择邮箱-开启smtp服务">选择邮箱 开启SMTP服务</h3>
+<figure data-type="image" tabindex="1"><img src="https://mrhcj.github.io/post-images/1676003459067.png" alt="" loading="lazy"></figure>
+<h3 id="导入spring-email-jar包-链接spring-boot-starter-mail">导入Spring Email Jar包  链接:<a href="https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail">Spring Boot Starter Mail</a></h3>
+<pre><code>&lt;!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-mail&lt;/artifactId&gt;
+            &lt;version&gt;3.0.2&lt;/version&gt;
+        &lt;/dependency&gt;
+</code></pre>
+<h3 id="在项目中完成邮箱配置">在项目中完成邮箱配置</h3>
+<pre><code># MailProperties
+spring.mail.host=smtp.163.com
+spring.mail.port=465
+spring.mail.username=xxxxxxxx@163.com
+spring.mail.password=xxxxxxxxx
+spring.mail.protocol=smtps
+spring.mail.properties.mail.smtp.ssl.enable=true
+</code></pre>
+<h3 id="mail工具类">Mail工具类</h3>
+<pre><code>package com.community.community.util;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Component;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
+//邮箱工具类
+@Component
+public class MailClient {
+
+    private static final Logger logger = LoggerFactory.getLogger(MailClient.class);
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Value(&quot;${spring.mail.username}&quot;)
+    private String from;
+
+    public void sendMail (String to,String subject, String content){
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+            //发件人
+            helper.setFrom(from);
+            //收件人
+            helper.setTo(to);
+            //主题
+            helper.setSubject(subject);
+            //内容 true表示可识别html格式
+            helper.setText(content,true);
+            mailSender.send(helper.getMimeMessage());
+        } catch (MessagingException e) {
+            logger.error(&quot;邮件发送失败：&quot;+e.getMessage());
+        }
+    }
+}
+</code></pre>
+<p>使用测试</p>
+<pre><code class="language-java">@SpringBootTest
+public class MailTests {
+
+    @Autowired
+    private MailClient mailClient;
+
+    @Autowired
+    private TemplateEngine templateEngine;
+
+    //普通文本
+    @Test
+    public void MailSendTest(){
+        //发送邮箱 标题 内容
+        mailClient.sendMail(&quot;1937026980@qq.com&quot;,&quot;test&quot;,&quot;hello success!&quot;);
+    }
+
+    //html文本
+    @Test
+    public void HtmlMailTest(){
+        Context context = new Context();
+        context.setVariable(&quot;username&quot;,&quot;sunday&quot;);
+        String content = templateEngine.process(&quot;/mail/activation&quot;, context);
+        mailClient.sendMail(&quot;1937026980@qq.com&quot;,&quot;Test&quot;,content);
+    }
+}
+</code></pre>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://mrhcj.github.io/post/windows-chang-yong-chang-jing/">
+                  <h3 class="post-title">
+                    Windows常用场景
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '831a8c3b4ca8839e5a45',
+        clientSecret: 'dea419437e63019edfb09a595334ab984a03ed9b',
+        repo: 'mrhcj.github.io',
+        owner: 'mrhcj',
+        admin: ['mrhcj'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

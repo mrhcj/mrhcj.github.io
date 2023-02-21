@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>单例模式 | MrHu</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://mrhcj.github.io/favicon.ico?v=1676989601653">
+<link rel="stylesheet" href="https://mrhcj.github.io/styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="饿汉式单例
+public class SingleTon01 {
+
+    private static SingleTon01 singleTon01 = new SingleTon01();
+
+    private SingleTon..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://mrhcj.github.io">
+        <img src="https://mrhcj.github.io/images/avatar.png?v=1676989601653" class="site-logo">
+        <h1 class="site-title">MrHu</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+        
+          <a href="https://mrhcj.github.io/archives" class="site-nav">
+            test
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/mrhcj" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      悟已往之不谏 知来者之可追
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://mrhcj.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">单例模式</h2>
+            <div class="post-date">2023-02-10</div>
+            
+            <div class="post-content" v-pre>
+              <p>饿汉式单例</p>
+<pre><code class="language-java">public class SingleTon01 {
+
+    private static SingleTon01 singleTon01 = new SingleTon01();
+
+    private SingleTon01(){
+        //添加反射判断，防止单例被反射通过构造器破坏
+        if(singleTon01!=null){
+           	throw new RunTimeException(&quot;单例模式下禁止通过反射创建实例！&quot;);
+        }
+    }
+
+    public static SingleTon01 getInstance(){
+        return singleTon01;
+    }
+}
+</code></pre>
+<p>懒汉式单例</p>
+<pre><code class="language-java">public class SingleTon02 {
+
+    private static SingleTon02 singleTon02;
+
+    private SingleTon02(){
+    }
+
+    public static synchronized SingleTon02 getSingleTon02(){
+        if(singleTon02==null){
+            singleTon02 = new SingleTon02();
+        }
+        return singleTon02;
+    }
+}
+</code></pre>
+<p>DCL双重检测锁</p>
+<pre><code class="language-java">public class SingleTon03 {
+    private static SingleTon03 singleTon03;
+    private SingleTon03(){
+        //添加反射判断，防止单例被反射通过构造器破坏
+        if(singleTon03!=null){
+           	throw new RunTimeException(&quot;单例模式下禁止通过反射创建实例！&quot;);
+        }
+    }
+    public static SingleTon03 getInstance(){
+        //为了防止每次都进行加锁同步 首先判断是否需要初始化单例
+        if(singleTon03==null){
+            synchronized (SingleTon03.class){
+                //双重检测锁机制，防止其他线程阻塞在获取锁处，锁释放后造成重复创建
+                if(singleTon03==null){
+                    singleTon03 = new SingleTon03();
+                }
+            }
+        }
+        return singleTon03;
+    }
+}
+</code></pre>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://mrhcj.github.io/post/springboot-fa-song-you-jian-fu-wu/">
+                  <h3 class="post-title">
+                    SpringBoot发送邮件服务
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '831a8c3b4ca8839e5a45',
+        clientSecret: 'dea419437e63019edfb09a595334ab984a03ed9b',
+        repo: 'mrhcj.github.io',
+        owner: 'mrhcj',
+        admin: ['mrhcj'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>

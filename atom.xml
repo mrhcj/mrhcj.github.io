@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://mrhcj.github.io</id>
+    <title>MrHu</title>
+    <updated>2023-02-21T14:31:01.814Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://mrhcj.github.io"/>
+    <link rel="self" href="https://mrhcj.github.io/atom.xml"/>
+    <subtitle>悟已往之不谏 知来者之可追</subtitle>
+    <logo>https://mrhcj.github.io/images/avatar.png</logo>
+    <icon>https://mrhcj.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2023, MrHu</rights>
+    <entry>
+        <title type="html"><![CDATA[GIT]]></title>
+        <id>https://mrhcj.github.io/post/git/</id>
+        <link href="https://mrhcj.github.io/post/git/">
+        </link>
+        <updated>2023-02-21T08:57:05.000Z</updated>
+        <content type="html"><![CDATA[<p>官网：https://git-scm.com/</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[生成验证码服务]]></title>
+        <id>https://mrhcj.github.io/post/sheng-cheng-yan-zheng-ma-fu-wu/</id>
+        <link href="https://mrhcj.github.io/post/sheng-cheng-yan-zheng-ma-fu-wu/">
+        </link>
+        <updated>2023-02-11T09:59:17.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="使用工具kaptcha-链接需科学上网">使用工具：Kaptcha  <a href="https://code.google.com/archive/p/kaptcha/">链接(需科学上网)</a></h2>
+<h3 id="导入jar包">导入JAR包</h3>
+<p><a href="https://mvnrepository.com/artifact/com.github.penggle/kaptcha">地址</a></p>
+<pre><code>&lt;!-- https://mvnrepository.com/artifact/com.github.penggle/kaptcha --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.github.penggle&lt;/groupId&gt;
+    &lt;artifactId&gt;kaptcha&lt;/artifactId&gt;
+    &lt;version&gt;2.3.2&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h3 id="使用bean注入进行配置">使用Bean注入进行配置</h3>
+<pre><code>@Configuration
+public class KaptchaConfig {
+
+    @Bean
+    public Producer kaptchaProducer(){
+        Properties properties = new Properties();
+        properties.setProperty(&quot;kaptcha.image.width&quot;,&quot;100&quot;);
+        properties.setProperty(&quot;kaptcha.image.height&quot;,&quot;40&quot;);
+        properties.setProperty(&quot;kaptcha.textproducer.font.size&quot;,&quot;32&quot;);
+        properties.setProperty(&quot;kaptcha.textproducer.font.color&quot;,&quot;0,0,0&quot;);
+        properties.setProperty(&quot;kaptcha.textproducer.char.string&quot;,&quot;0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;);
+        properties.setProperty(&quot;kaptcha.textproducer.char.length&quot;,&quot;4&quot;);
+        properties.setProperty(&quot;kaptcha.noise.impl&quot;,&quot;com.google.code.kaptcha.impl.NoNoise&quot;);
+        
+        DefaultKaptcha kaptcha = new DefaultKaptcha();
+        Config config = new Config(properties);
+        kaptcha.setConfig(config);
+        return kaptcha;
+    }
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[单例模式]]></title>
+        <id>https://mrhcj.github.io/post/dan-li-mo-shi/</id>
+        <link href="https://mrhcj.github.io/post/dan-li-mo-shi/">
+        </link>
+        <updated>2023-02-10T12:20:35.000Z</updated>
+        <content type="html"><![CDATA[<p>饿汉式单例</p>
+<pre><code class="language-java">public class SingleTon01 {
+
+    private static SingleTon01 singleTon01 = new SingleTon01();
+
+    private SingleTon01(){
+        //添加反射判断，防止单例被反射通过构造器破坏
+        if(singleTon01!=null){
+           	throw new RunTimeException(&quot;单例模式下禁止通过反射创建实例！&quot;);
+        }
+    }
+
+    public static SingleTon01 getInstance(){
+        return singleTon01;
+    }
+}
+</code></pre>
+<p>懒汉式单例</p>
+<pre><code class="language-java">public class SingleTon02 {
+
+    private static SingleTon02 singleTon02;
+
+    private SingleTon02(){
+    }
+
+    public static synchronized SingleTon02 getSingleTon02(){
+        if(singleTon02==null){
+            singleTon02 = new SingleTon02();
+        }
+        return singleTon02;
+    }
+}
+</code></pre>
+<p>DCL双重检测锁</p>
+<pre><code class="language-java">public class SingleTon03 {
+    private static SingleTon03 singleTon03;
+    private SingleTon03(){
+        //添加反射判断，防止单例被反射通过构造器破坏
+        if(singleTon03!=null){
+           	throw new RunTimeException(&quot;单例模式下禁止通过反射创建实例！&quot;);
+        }
+    }
+    public static SingleTon03 getInstance(){
+        //为了防止每次都进行加锁同步 首先判断是否需要初始化单例
+        if(singleTon03==null){
+            synchronized (SingleTon03.class){
+                //双重检测锁机制，防止其他线程阻塞在获取锁处，锁释放后造成重复创建
+                if(singleTon03==null){
+                    singleTon03 = new SingleTon03();
+                }
+            }
+        }
+        return singleTon03;
+    }
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[SpringBoot发送邮件服务]]></title>
+        <id>https://mrhcj.github.io/post/springboot-fa-song-you-jian-fu-wu/</id>
+        <link href="https://mrhcj.github.io/post/springboot-fa-song-you-jian-fu-wu/">
+        </link>
+        <updated>2023-02-10T04:24:03.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="选择邮箱-开启smtp服务">选择邮箱 开启SMTP服务</h3>
+<figure data-type="image" tabindex="1"><img src="https://mrhcj.github.io/post-images/1676003459067.png" alt="" loading="lazy"></figure>
+<h3 id="导入spring-email-jar包-链接spring-boot-starter-mail">导入Spring Email Jar包  链接:<a href="https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail">Spring Boot Starter Mail</a></h3>
+<pre><code>&lt;!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-boot-starter-mail&lt;/artifactId&gt;
+            &lt;version&gt;3.0.2&lt;/version&gt;
+        &lt;/dependency&gt;
+</code></pre>
+<h3 id="在项目中完成邮箱配置">在项目中完成邮箱配置</h3>
+<pre><code># MailProperties
+spring.mail.host=smtp.163.com
+spring.mail.port=465
+spring.mail.username=xxxxxxxx@163.com
+spring.mail.password=xxxxxxxxx
+spring.mail.protocol=smtps
+spring.mail.properties.mail.smtp.ssl.enable=true
+</code></pre>
+<h3 id="mail工具类">Mail工具类</h3>
+<pre><code>package com.community.community.util;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Component;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
+//邮箱工具类
+@Component
+public class MailClient {
+
+    private static final Logger logger = LoggerFactory.getLogger(MailClient.class);
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Value(&quot;${spring.mail.username}&quot;)
+    private String from;
+
+    public void sendMail (String to,String subject, String content){
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message);
+            //发件人
+            helper.setFrom(from);
+            //收件人
+            helper.setTo(to);
+            //主题
+            helper.setSubject(subject);
+            //内容 true表示可识别html格式
+            helper.setText(content,true);
+            mailSender.send(helper.getMimeMessage());
+        } catch (MessagingException e) {
+            logger.error(&quot;邮件发送失败：&quot;+e.getMessage());
+        }
+    }
+}
+</code></pre>
+<p>使用测试</p>
+<pre><code class="language-java">@SpringBootTest
+public class MailTests {
+
+    @Autowired
+    private MailClient mailClient;
+
+    @Autowired
+    private TemplateEngine templateEngine;
+
+    //普通文本
+    @Test
+    public void MailSendTest(){
+        //发送邮箱 标题 内容
+        mailClient.sendMail(&quot;1937026980@qq.com&quot;,&quot;test&quot;,&quot;hello success!&quot;);
+    }
+
+    //html文本
+    @Test
+    public void HtmlMailTest(){
+        Context context = new Context();
+        context.setVariable(&quot;username&quot;,&quot;sunday&quot;);
+        String content = templateEngine.process(&quot;/mail/activation&quot;, context);
+        mailClient.sendMail(&quot;1937026980@qq.com&quot;,&quot;Test&quot;,content);
+    }
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Windows常用场景]]></title>
+        <id>https://mrhcj.github.io/post/windows-chang-yong-chang-jing/</id>
+        <link href="https://mrhcj.github.io/post/windows-chang-yong-chang-jing/">
+        </link>
+        <updated>2023-02-09T04:20:49.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="快捷键冲突查询">快捷键冲突查询</h2>
+<p>适用于使用Windows的时，出现快捷键被占用而无法定位进程的场景。<br>
+使用工具：SPY++<br>
+<a href="https://zhuanlan.zhihu.com/p/355878952">教程地址</a>   <a href="https://learn.microsoft.com/zh-cn/visualstudio/debugger/spy-increment-help?view=vs-2019">官方教程</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[my test]]></title>
+        <id>https://mrhcj.github.io/post/my-test/</id>
+        <link href="https://mrhcj.github.io/post/my-test/">
+        </link>
+        <updated>2023-02-08T05:40:44.000Z</updated>
+        <content type="html"><![CDATA[<pre><code>import java.util.*;
+
+/*
+* public class ListNode {
+*   int val;
+*   ListNode next = null;
+* }
+*/
+
+public class Solution {
+    /**
+    * 
+    * @param head ListNode类 
+    * @param m int整型 
+    * @param n int整型 
+    * @return ListNode类
+    */
+    public ListNode reverseBetween (ListNode head, int m, int n) {
+        // write code here
+        ListNode res = new ListNode(-1);
+        res.next = head;
+
+        ListNode pre = res,cur = head;
+
+        for(int i = 1;i&lt;m;i++){
+            pre = cur;
+            cur = cur.next;
+        }
+
+        for(int i = m;i &lt; n;i++){
+            ListNode temp = cur.next;
+            cur.next = temp.next;
+            temp.next = pre.next;
+            pre.next = temp;
+        }
+
+        return res.next;
+    }
+}
+</code></pre>
+<pre><code>public static void main(){
+    System.out.println(&quot;Test!&quot;);
+}
+</code></pre>
+<p>IYUIYUG</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Hello Gridea]]></title>
+        <id>https://mrhcj.github.io/post/hello-gridea/</id>
+        <link href="https://mrhcj.github.io/post/hello-gridea/">
+        </link>
+        <updated>2018-12-11T16:00:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
+✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
+✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
+<!-- more -->
+<p><a href="https://github.com/getgridea/gridea">Github</a><br>
+<a href="https://gridea.dev/">Gridea 主页</a><br>
+<a href="https://fehey.com/">示例网站</a></p>
+<h2 id="特性">特性👇</h2>
+<p>📝  你可以使用最酷的 <strong>Markdown</strong> 语法，进行快速创作</p>
+<p>🌉  你可以给文章配上精美的封面图和在文章任意位置插入图片</p>
+<p>🏷️  你可以对文章进行标签分组</p>
+<p>📋  你可以自定义菜单，甚至可以创建外部链接菜单</p>
+<p>💻  你可以在 <strong>Windows</strong>，<strong>MacOS</strong> 或 <strong>Linux</strong> 设备上使用此客户端</p>
+<p>🌎  你可以使用 <strong>𝖦𝗂𝗍𝗁𝗎𝖻 𝖯𝖺𝗀𝖾𝗌</strong> 或 <strong>Coding Pages</strong> 向世界展示，未来将支持更多平台</p>
+<p>💬  你可以进行简单的配置，接入 <a href="https://github.com/gitalk/gitalk">Gitalk</a> 或 <a href="https://github.com/SukkaW/DisqusJS">DisqusJS</a> 评论系统</p>
+<p>🇬🇧  你可以使用<strong>中文简体</strong>或<strong>英语</strong></p>
+<p>🌁  你可以任意使用应用内默认主题或任意第三方主题，强大的主题自定义能力</p>
+<p>🖥  你可以自定义源文件夹，利用 OneDrive、百度网盘、iCloud、Dropbox 等进行多设备同步</p>
+<p>🌱 当然 <strong>Gridea</strong> 还很年轻，有很多不足，但请相信，它会不停向前 🏃</p>
+<p>未来，它一定会成为你离不开的伙伴</p>
+<p>尽情发挥你的才华吧！</p>
+<p>😘 Enjoy~</p>
+]]></content>
+    </entry>
+</feed>

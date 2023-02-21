@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>生成验证码服务 | MrHu</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://mrhcj.github.io/favicon.ico?v=1676989601653">
+<link rel="stylesheet" href="https://mrhcj.github.io/styles/main.css">
+
+
+  
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css" />
+  
+
+  
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="使用工具：Kaptcha  链接(需科学上网)
+导入JAR包
+地址
+&lt;!-- https://mvnrepository.com/artifact/com.github.penggle/kaptcha --&gt;
+&lt;depen..." />
+    <meta name="keywords" content="" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://mrhcj.github.io">
+        <img src="https://mrhcj.github.io/images/avatar.png?v=1676989601653" class="site-logo">
+        <h1 class="site-title">MrHu</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+        
+          <a href="https://mrhcj.github.io/archives" class="site-nav">
+            test
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+          <a class="social-link" href="https://github.com/mrhcj" target="_blank">
+            <i class="fab fa-github"></i>
+          </a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      悟已往之不谏 知来者之可追
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a> | <a class="rss" href="https://mrhcj.github.io/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">生成验证码服务</h2>
+            <div class="post-date">2023-02-11</div>
+            
+            <div class="post-content" v-pre>
+              <h2 id="使用工具kaptcha-链接需科学上网">使用工具：Kaptcha  <a href="https://code.google.com/archive/p/kaptcha/">链接(需科学上网)</a></h2>
+<h3 id="导入jar包">导入JAR包</h3>
+<p><a href="https://mvnrepository.com/artifact/com.github.penggle/kaptcha">地址</a></p>
+<pre><code>&lt;!-- https://mvnrepository.com/artifact/com.github.penggle/kaptcha --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.github.penggle&lt;/groupId&gt;
+    &lt;artifactId&gt;kaptcha&lt;/artifactId&gt;
+    &lt;version&gt;2.3.2&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<h3 id="使用bean注入进行配置">使用Bean注入进行配置</h3>
+<pre><code>@Configuration
+public class KaptchaConfig {
+
+    @Bean
+    public Producer kaptchaProducer(){
+        Properties properties = new Properties();
+        properties.setProperty(&quot;kaptcha.image.width&quot;,&quot;100&quot;);
+        properties.setProperty(&quot;kaptcha.image.height&quot;,&quot;40&quot;);
+        properties.setProperty(&quot;kaptcha.textproducer.font.size&quot;,&quot;32&quot;);
+        properties.setProperty(&quot;kaptcha.textproducer.font.color&quot;,&quot;0,0,0&quot;);
+        properties.setProperty(&quot;kaptcha.textproducer.char.string&quot;,&quot;0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;);
+        properties.setProperty(&quot;kaptcha.textproducer.char.length&quot;,&quot;4&quot;);
+        properties.setProperty(&quot;kaptcha.noise.impl&quot;,&quot;com.google.code.kaptcha.impl.NoNoise&quot;);
+        
+        DefaultKaptcha kaptcha = new DefaultKaptcha();
+        Config config = new Config(properties);
+        kaptcha.setConfig(config);
+        return kaptcha;
+    }
+}
+</code></pre>
+
+            </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://mrhcj.github.io/post/dan-li-mo-shi/">
+                  <h3 class="post-title">
+                    单例模式
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+              
+                <div id="gitalk-container" data-aos="fade-in"></div>
+              
+
+              
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+  
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+
+      var gitalk = new Gitalk({
+        clientID: '831a8c3b4ca8839e5a45',
+        clientSecret: 'dea419437e63019edfb09a595334ab984a03ed9b',
+        repo: 'mrhcj.github.io',
+        owner: 'mrhcj',
+        admin: ['mrhcj'],
+        id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+
+    </script>
+  
+
+  
+
+
+
+
+  </body>
+</html>
